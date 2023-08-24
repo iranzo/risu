@@ -989,6 +989,8 @@ def parse_args(default=False, parse=False):
         choices=range(1, 1001),
     )
 
+    p.add_argument("sosreport", nargs="?")
+
     g = p.add_argument_group("Output and logging options")
     g.add_argument(
         "--blame",
@@ -1138,7 +1140,49 @@ def parse_args(default=False, parse=False):
         metavar="title",
     )
 
-    p.add_argument("sosreport", nargs="?")
+    e = p.add_argument_group("Exam Options")
+    e.add_argument(
+        "--exam",
+        help=_("Activate exam mode"),
+        action="store_true",
+    )
+    e.add_argument(
+        "--random",
+        help=_("Activate random tests up to the max-questions value"),
+        action="store_true",
+    )
+    e.add_argument(
+        "--max-questions",
+        metavar="[0-1000]",
+        type=int,
+        choices=range(1001),
+        help=_("Include a maximum of questions for the exam"),
+        default=30,
+    )
+
+    e.add_argument(
+        "--good-value",
+        metavar="[0-1000]",
+        type=float,
+        help=_("Points for correcly answered questions"),
+        default=1,
+    )
+
+    e.add_argument(
+        "--bad-value",
+        metavar="[-1000-1000]",
+        type=float,
+        help=_("Points for incorrect questions"),
+        default=0,
+    )
+
+    e.add_argument(
+        "--skip-value",
+        metavar="[-1000-1000]",
+        type=float,
+        help=_("Points for skipped questions"),
+        default=0,
+    )
 
     if not default and not parse:
         return p.parse_args()
@@ -1509,6 +1553,11 @@ def printresults(results, options):
     :param results: results to print form risu execution
     :param options: commandline options passed
     """
+    totals = {}
+    totals["ok"] = 0
+    totals["bad"] = 0
+    totals["skip"] = 0
+
     for result in results:
         out = results[result]["result"]["out"]
         err = results[result]["result"]["err"]
@@ -1526,6 +1575,13 @@ def printresults(results, options):
 
         if rc == RC_FAILED:
             text = text + " [%s]" % colorize(text=priority, color=priocolor)
+            totals["bad"] = totals["bad"] + 1
+
+        if rc == RC_OKAY:
+            totals["ok"] = totals["ok"] + 1
+
+        if rc == RC_SKIPPED:
+            totals["skip"] = totals["skip"] + 1
 
         if not options.verbose and rc in [RC_OKAY, RC_SKIPPED, RC_INFO]:
             continue
@@ -1552,6 +1608,24 @@ def printresults(results, options):
 
         if show_err and err.strip():
             print(indent(err, 4))
+
+    if options.exam:
+        print("\nExam results:")
+        print(totals)
+        print(
+            "Your grade: %.2f"
+            % float(
+                (
+                    totals["ok"]
+                    * options.good_value
+                    / (
+                        totals["ok"] * options.good_value
+                        + totals["bad"] * options.bad_value
+                        + totals["skip"] * options.skip_value
+                    )
+                )
+            )
+        )
 
 
 def main():
