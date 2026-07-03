@@ -17,6 +17,42 @@ try:
 except ImportError:
     HYPOTHESIS_AVAILABLE = False
 
+    # Provide dummy decorators when hypothesis is not available
+    def given(*args, **kwargs):
+        def decorator(func):
+            return func
+
+        return decorator
+
+    def hypothesis_settings(*args, **kwargs):
+        def decorator(func):
+            return func
+
+        return decorator
+
+    # Dummy strategies for when hypothesis isn't available
+    class st:
+        @staticmethod
+        def integers(*args, **kwargs):
+            return None
+
+        @staticmethod
+        def text(*args, **kwargs):
+            return None
+
+        @staticmethod
+        def lists(*args, **kwargs):
+            return None
+
+        @staticmethod
+        def one_of(*args, **kwargs):
+            return None
+
+        @staticmethod
+        def none():
+            return None
+
+
 try:
     from risuclient import metadata
 except ImportError:
@@ -156,13 +192,14 @@ class TestMetadataExtractionProperties(unittest.TestCase):
 
     def _create_plugin_content(self, long_name, description, priority):
         """Helper to create valid plugin content."""
+        # Use actual values instead of placeholders to avoid parsing issues
         return """#!/bin/bash
-# long_name: {long_name}
-# description: {description}
-# priority: {priority}
+# long_name: {}
+# description: {}
+# priority: {}
 
 echo "test"
-""".format(long_name=long_name, description=description, priority=priority)
+""".format(long_name, description, priority)
 
     @given(
         long_name=st.text(min_size=1, max_size=60).filter(lambda x: "\n" not in x),
