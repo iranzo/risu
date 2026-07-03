@@ -7,9 +7,7 @@
 # Copyright (C) 2024, 2025
 # Copyright (C) 2017, 2018 Robin Černín <cerninr@gmail.com>
 # Copyright (C) 2017 Lars Kellogg-Stedman <lars@redhat.com>
-# Copyright (C) 2024
 # Copyright (C) 2017-2026 Pablo Iranzo Gómez <Pablo.Iranzo@gmail.com>
-# Copyright (C) 2024
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

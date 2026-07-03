@@ -3,7 +3,7 @@
 #
 # Description: OpenStack plugin specific tests
 #
-# Copyright (C) 2017-2019, 2021, 2024, 2025 Pablo Iranzo Gómez <Pablo.Iranzo@gmail.com>
+# Copyright (C) 2017-2019, 2021, 2025, 2026 Pablo Iranzo Gómez <Pablo.Iranzo@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

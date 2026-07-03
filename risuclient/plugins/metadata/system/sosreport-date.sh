@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Copyright (C) 2019 Mikel Olasagasti Uranga <mikel@olasagasti.info>
-# Copyright (C) 2018, 2019, 2021, 2023, 2025 Pablo Iranzo Gómez <Pablo.Iranzo@gmail.com>
+# Copyright (C) 2018, 2019, 2021, 2025, 2026 Pablo Iranzo Gómez <Pablo.Iranzo@gmail.com>
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

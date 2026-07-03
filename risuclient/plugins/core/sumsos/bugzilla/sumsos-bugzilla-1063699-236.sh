@@ -1,7 +1,7 @@
 #!/bin/bash
 # Code based on the regexps from sumsos from John Devereux (john_devereux@yahoo.com)
 
-# Copyright (C) 2021-2023, 2025 Pablo Iranzo Gómez <Pablo.Iranzo@gmail.com>
+# Copyright (C) 2021, 2022, 2025 Pablo Iranzo Gómez <Pablo.Iranzo@gmail.com>
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

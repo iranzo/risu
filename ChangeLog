@@ -1,6 +1,27 @@
 CHANGES
 =======
 
+* Eliminar frogbot
+* Update formatting
+* Add Frogbot Scan and Fix workflow
+* Add Bandit security scan workflow
+* Add Dependency Review Action workflow
+* Add Codacy security scan workflow
+* Add GitHub Action to summarize new issues
+* Add CodeQL analysis workflow configuration
+* build(deps): update coverage requirement
+* build(deps): update filelock requirement from >=3.29.4 to >=3.29.5
+* build(deps): bump actions/checkout from 4 to 7
+* build(deps): bump codecov/codecov-action from 4 to 7
+* build(deps): bump actions/upload-artifact from 4 to 7
+* build(deps): bump actions/setup-python from 5 to 6
+* Change files with pre-commit
+* [docs] Fix code block syntax in NEW\_FEATURES\_README.md
+* [tools][pre-commit] Configure shfmt to use tabs instead of spaces
+* Update scripts
+* Disable write token
+* Add auto-generated markdown files to trunk ignore list
+* [skip ci] Autoupdate (C) on script change - add year 2026
 * Update GitHub Actions to latest versions for Node.js 24 support
 * Add noqa comment for flake8 F824 false positive
 * Update python-package.yml to use Python 3.13
@@ -352,8 +373,8 @@ CHANGES
 * feat: Enhance STIC619 login defs for EL9
 * feat: discover EL9 release
 
-1.11
-----
+1.11.0
+------
 
 * chore(release): 1.11.0 [skip ci]
 * feat: enable env-for-debug.sh to be easily accessible when installing as package
@@ -365,8 +386,8 @@ CHANGES
 * chore(release): 1.10.0 [skip ci]
 * feat: report NIC firmware version
 
-1.9.0
------
+1.9
+---
 
 * chore(release): 1.9.0 [skip ci]
 * feat: add two checks from STIC-610A22
