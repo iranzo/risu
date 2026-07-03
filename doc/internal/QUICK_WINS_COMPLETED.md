@@ -96,7 +96,6 @@ Results: 4 passed, 0 failed
 **Templates Created**:
 
 1. **template_modern.sh** - Comprehensive bash plugin template
-
    - Detailed metadata documentation with priority ranges
    - Common-functions.sh loading pattern
    - Examples of file checks, service checks, config parsing
@@ -105,14 +104,12 @@ Results: 4 passed, 0 failed
    - Examples using common helper functions
 
 2. **template_ansible.yml** - Ansible playbook plugin template
-
    - Shows RISU_ROOT and RISU_LIVE handling
    - Demonstrates RC code usage in Ansible
    - Skip conditions and error handling
    - Proper variable usage
 
 3. **template_python.py** - Python plugin template
-
    - Python 2.7 and 3.x compatible
    - Proper exception handling
    - File and content checking examples
@@ -191,20 +188,17 @@ Added to `.pre-commit-config.yaml`:
 ## Testing Performed
 
 1. **Bare except fixes**:
-
    - Verified syntax is correct: `python -m py_compile risuclient/shell.py`
    - Checked no functional changes: reviewed each exception type
    - Confirmed tox still passes (flake8 checks)
 
 2. **Plugin validation tool**:
-
    - Tested on individual plugins: ✅
    - Tested recursive directory scan: ✅ (4 plugins validated)
    - Verified shellcheck integration: ✅ (warns when issues found)
    - Tested verbose mode: ✅
 
 3. **Templates**:
-
    - Verified all templates have execute permissions
    - Confirmed metadata headers present in all
    - Checked RC constants used correctly
