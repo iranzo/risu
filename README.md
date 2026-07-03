@@ -58,9 +58,25 @@ Check how does it look in an execution at:
 - Read the [Contributing](https://risu.readthedocs.org/en/latest/development/CONTRIBUTING/) document on how to submit patches
 - Provide the sosreports to check against via <https://www.dropbox.com/request/8LGneF9i9nc9RB6aqXge>, specially if running Debian based distributions and or Fedora/CentOS based ones so that we can improve support for it
 
+## Creating Plugins
+
+Want to add your own checks? See the [Plugin Development Guide](PLUGIN_DEVELOPMENT.md) for a complete tutorial.
+
+**Quick start:**
+
+```bash
+./tools/risu-plugin-create --name myplugin --priority 800 --category core/myarea
+```
+
 ## Documentation
 
 Documentation is available at [Read the docs](https://risu.readthedocs.org)
+
+**Key guides:**
+
+- [Plugin Development](PLUGIN_DEVELOPMENT.md) - Create your own plugins
+- [Contributing](CONTRIBUTING.md) - Contribution guidelines
+- [Architecture](ARCHITECTURE.md) - Framework design
 
 ## Contact us!!
 

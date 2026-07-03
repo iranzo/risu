@@ -67,10 +67,42 @@ tox                                 # Test multiple Python versions
 
 ---
 
+## Commit Message Format
+
+Risu follows [Conventional Commits](https://www.conventionalcommits.org/) format:
+
+```
+<type>(<scope>): <subject>
+
+[optional body]
+
+[optional footer]
+```
+
+**Types:** `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`
+**Scopes:** `plugins`, `core`, `magui`, `ci`, `deps` (optional)
+
+### Setup commit template
+
+```bash
+git config commit.template .gitmessage
+```
+
+### Examples
+
+```
+feat(executor): add --profile flag for performance profiling
+fix(plugins): handle missing sosreport files gracefully
+docs: add PLUGIN_DEVELOPMENT.md tutorial
+build(deps): consolidate requirements files
+```
+
+---
+
 ## Pull Request Process
 
 1. Create feature branch
-2. Make changes
+2. Make changes following conventional commits
 3. Add tests
 4. Run `pre-commit run --all-files`
 5. Push and create PR

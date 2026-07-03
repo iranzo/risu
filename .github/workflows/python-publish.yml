@@ -25,7 +25,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install setuptools wheel twine
+          pip install build twine setuptools-scm
 
       - name: Branch name
         id: branch_name
@@ -36,9 +36,7 @@ jobs:
 
       - name: Build package
         run: |
-          python setup.py sdist bdist_wheel
-        env:
-          RELEASE_VERSION: ${{ steps.branch_name.outputs.SOURCE_TAG }}
+          python -m build
 
       - name: Publish distribution to PyPI
         uses: pypa/gh-action-pypi-publish@v1.14.0

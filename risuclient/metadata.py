@@ -17,9 +17,15 @@ import os
 import re
 
 try:
+    from typing import Any, Dict, List, Optional, Tuple  # noqa: F401
+except ImportError:
+    # Python 2.7 compatibility
+    pass
+
+try:
     from risuclient import exceptions
 except ImportError:
-    import exceptions
+    import exceptions  # type: ignore[no-redef]
 
 
 # Priority ranges for validation
@@ -54,14 +60,15 @@ class PluginMetadata(object):
 
     def __init__(
         self,
-        long_name,
-        description,
-        priority,
-        bugzilla=None,
-        kb=None,
-        tags=None,
-        plugin_path=None,
+        long_name,  # type: str
+        description,  # type: str
+        priority,  # type: int
+        bugzilla=None,  # type: Optional[str]
+        kb=None,  # type: Optional[str]
+        tags=None,  # type: Optional[List[str]]
+        plugin_path=None,  # type: Optional[str]
     ):
+        # type: (...) -> None
         """
         Initialize plugin metadata.
 

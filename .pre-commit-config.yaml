@@ -60,6 +60,19 @@ repos:
       # Run the formatter.
       - id: ruff-format
 
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.11.0
+    hooks:
+      - id: mypy
+        additional_dependencies: [types-requests, types-PyYAML]
+        args:
+          - --config-file=pyproject.toml
+          - --no-error-summary
+          - --show-column-numbers
+        files: ^risuclient/(executor|metadata|config)\.py$  # Only check fully typed modules
+        # Gradual type adoption - start with just the modules we fully annotated
+        verbose: true
+
   - repo: https://github.com/scop/pre-commit-shfmt
     rev: v3.13.1-1
     hooks:

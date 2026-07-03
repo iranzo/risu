@@ -1,0 +1,29 @@
+# <type>(<scope>): <subject>
+#
+# Types: feat, fix, docs, style, refactor, perf, test, build, ci, chore
+# Scope: plugins, core, magui, ci, deps (optional)
+#
+# Example: fix(plugins): handle missing sosreport files gracefully
+# Example: feat(executor): add --profile flag for performance profiling
+# Example: docs(templates): add PLUGIN_DEVELOPMENT.md tutorial
+#
+# --- COMMIT END ---
+# Type can be:
+#   feat     (new feature)
+#   fix      (bug fix)
+#   docs     (documentation)
+#   style    (formatting, missing semi colons, etc; no code change)
+#   refactor (refactoring production code)
+#   perf     (performance improvement)
+#   test     (adding tests, refactoring tests; no production code change)
+#   build    (build system, dependencies)
+#   ci       (CI/CD pipeline changes)
+#   chore    (updating grunt tasks etc; no production code change)
+#
+# Subject should:
+#   - Use imperative mood ("add feature" not "added feature")
+#   - Not capitalize first letter
+#   - Not end with a period
+#
+# Body should explain what and why vs. how (optional)
+# Footer should reference issues (optional): "Fixes #123"

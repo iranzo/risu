@@ -17,12 +17,18 @@ import logging
 import multiprocessing
 import signal
 
+try:
+    from typing import Any, Callable, Dict, List, Optional  # noqa: F401
+except ImportError:
+    # Python 2.7 compatibility
+    pass
+
 # Python 2.7 compatible context manager
 try:
     from contextlib import closing
 except ImportError:
     # Fallback for very old Python
-    class closing(object):
+    class closing(object):  # type: ignore[no-redef]
         def __init__(self, thing):
             self.thing = thing
 
@@ -52,6 +58,7 @@ class PluginExecutor(object):
     """
 
     def __init__(self, num_processes=None, timeout=30):
+        # type: (Optional[int], int) -> None
         """
         Initialize plugin executor.
 
@@ -76,6 +83,7 @@ class PluginExecutor(object):
         )
 
     def execute_plugins(self, plugins, execute_func, progress_callback=None):
+        # type: (List[Dict[str, Any]], Callable, Optional[Callable]) -> List[Dict[str, Any]]
         """
         Execute plugins in parallel.
 

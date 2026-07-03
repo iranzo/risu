@@ -33,6 +33,12 @@ import re
 import sys
 import tempfile
 
+try:
+    from typing import Any, Dict, List, Optional, Tuple, Union  # noqa: F401
+except ImportError:
+    # Python 2.7 compatibility
+    pass
+
 if sys.version_info >= (3, 4):
     # Handle  imp deprecation towards importlib
 
@@ -208,6 +214,7 @@ def colorize(text, color, stream=sys.stdout, force=False):
 
 
 def getExtensions(folder=ExtensionFolder):
+    # type: (str) -> List[Dict[str, Any]]
     """
     Gets list of Extensions in the Extensions folder
     :return: list of Extensions available
@@ -241,6 +248,7 @@ def loadPymodules(Extension):
 
 
 def initPymodules(extensions=getExtensions()):
+    # type: (List[Dict[str, Any]]) -> Tuple[List[Any], Dict[str, List[Any]]]
     """
     Initializes Extensions
     :return: list of Extension modules initialized

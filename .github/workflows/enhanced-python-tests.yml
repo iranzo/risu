@@ -61,6 +61,12 @@ jobs:
           # Treat all other errors as warnings
           flake8 risuclient maguiclient --count --exit-zero --max-complexity=18 --max-line-length=88 --statistics
 
+      - name: Type checking with mypy
+        continue-on-error: true  # Don't fail build yet, gradual adoption
+        run: |
+          pip install mypy types-requests types-PyYAML
+          mypy risuclient maguiclient --config-file=pyproject.toml
+
       - name: Run unit tests with coverage
         run: |
           pytest --cov=risuclient --cov=maguiclient --cov-report=xml --cov-report=term -v

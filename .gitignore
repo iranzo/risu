@@ -18,3 +18,4 @@
 rhinternal
 overrides.json
 tags
+risuclient/_version.py

@@ -1,0 +1,242 @@
+[build-system]
+requires = ["setuptools>=64", "setuptools-scm>=8.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "risu"
+description = "Utility for running set of tests against a Live System or a snapshot/sosreport"
+readme = "README.rst"
+license = {text = "GPL-3.0-or-later"}
+authors = [
+    {name = "Robin Černín", email = "cerninr@gmail.com"},
+    {name = "Pablo Iranzo Gómez", email = "Pablo.Iranzo@gmail.com"},
+]
+maintainers = [
+    {name = "Pablo Iranzo Gómez", email = "Pablo.Iranzo@gmail.com"},
+]
+
+# Minimum Python version - dropping Python 2.7 support
+requires-python = ">=3.8"
+
+# Dynamic version from git tags via setuptools-scm
+dynamic = ["version"]
+
+dependencies = [
+    "requests>=2.31.0",
+    "urllib3>=2.7.0",
+    "zombie-imp>=0.0.4",
+]
+
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "Environment :: OpenStack",
+    "Intended Audience :: Customer Service",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: System Administrators",
+    "Intended Audience :: Telecommunications Industry",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Unix Shell",
+    "Topic :: Security",
+    "Topic :: System",
+    "Topic :: System :: Systems Administration",
+    "Topic :: Utilities",
+]
+
+[project.urls]
+Homepage = "https://github.com/risuorg/risu"
+Documentation = "https://risu.readthedocs.org"
+Repository = "https://github.com/risuorg/risu.git"
+Issues = "https://github.com/risuorg/risu/issues"
+Changelog = "https://github.com/risuorg/risu/releases"
+
+[project.scripts]
+risu = "risuclient.shell:main"
+magui = "maguiclient.magui:main"
+citellus = "risuclient.shell:main"  # Legacy alias
+
+[project.optional-dependencies]
+test = [
+    "coverage!=4.4,>=7.15.0",
+    "pytest>=9.1.1",
+    "pytest-cov>=7.1.0",
+    "flake8>=7.0.0",
+    "ruff>=0.15.0",
+    "hypothesis>=6.100.0",  # Property-based testing
+]
+dev = [
+    "risu[test]",
+    "pre-commit>=4.0.0",
+    "pymarkdownlint>=0.3.1",
+    "tox>=4.0.0",
+    "mypy>=1.11.0",
+    "types-requests>=2.31.0",
+    "types-PyYAML>=6.0.0",
+]
+
+[tool.setuptools]
+packages = ["risuclient", "maguiclient"]
+
+[tool.setuptools.package-data]
+risu = ["*.html"]
+
+[tool.setuptools_scm]
+version_scheme = "post-release"
+local_scheme = "dirty-tag"
+write_to = "risuclient/_version.py"
+fallback_version = "0.0.0.dev0"
+
+# --- Code Quality Tools ---
+
+[tool.ruff]
+target-version = "py38"
+line-length = 88
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "UP",  # pyupgrade
+]
+ignore = [
+    "E203",  # whitespace before ':'
+    "E266",  # too many leading '#'
+    "E501",  # line too long (handled by formatter)
+    "W503",  # line break before binary operator
+    "E722",  # bare except (gradual fix)
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["F401", "F811"]
+"setup.py" = ["E722"]  # Temporary during migration
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.black]
+line-length = 88
+target-version = ['py38', 'py39', 'py310', 'py311', 'py312', 'py313']
+include = '\.pyi?$'
+
+[tool.isort]
+profile = "black"
+line_length = 88
+known_third_party = ["pytest", "setuptools", "requests"]
+
+# --- Testing & Coverage ---
+
+[tool.pytest.ini_options]
+minversion = "9.0"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "-v",
+    "--cov=risuclient",
+    "--cov=maguiclient",
+    "--cov-report=term-missing",
+    "--cov-report=html",
+    "--cov-report=xml",
+]
+
+[tool.coverage.run]
+source = ["risuclient", "maguiclient"]
+omit = [
+    "*/tests/*",
+    "*/test_*.py",
+    "setup.py",
+    "*/__pycache__/*",
+]
+parallel = true
+
+[tool.coverage.report]
+precision = 2
+fail_under = 50.0
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self\\.debug",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "@(abc\\.)?abstractmethod",
+]
+
+[tool.coverage.html]
+directory = "htmlcov"
+
+# --- Type Checking ---
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = false  # Permissive during gradual adoption
+warn_unused_configs = true
+disallow_untyped_defs = false  # Start permissive, gradually strict
+ignore_missing_imports = true  # For dependencies without stubs
+follow_imports = "skip"  # Don't follow imports into untyped packages
+allow_untyped_globals = true  # Allow globals without type annotations
+allow_untyped_defs = true  # Allow functions without type annotations
+check_untyped_defs = false  # Don't check bodies of untyped functions
+no_implicit_optional = false  # Allow implicit Optional
+strict_optional = false  # Don't require Optional for None defaults
+exclude = [
+    "^risuclient/plugins/",  # Plugins are out of scope for type checking
+    "^tests/",  # Test files can be less strict
+]
+
+# Per-module overrides for gradual adoption
+[[tool.mypy.overrides]]
+module = "risuclient.shell"
+# Shell module has many untyped functions - allow for now
+disable_error_code = ["assignment", "var-annotated", "attr-defined"]
+
+[[tool.mypy.overrides]]
+module = "risuclient.executor"
+# Executor is fully typed - can be strict
+warn_return_any = true
+
+[[tool.mypy.overrides]]
+module = "risuclient.metadata"
+# Metadata is fully typed - can be strict
+warn_return_any = true
+
+[[tool.mypy.overrides]]
+module = "risuclient.config"
+# Config is fully typed - can be strict
+warn_return_any = true
+
+[[tool.mypy.overrides]]
+module = "risuclient.shell"
+disallow_untyped_defs = false  # Will enable after adding type hints
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+ignore_errors = true  # Allow test code to be less strict
+
+# --- Conventional Commits ---
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+version = "1.0.7"
+version_files = [
+    "pyproject.toml:version",
+]
+tag_format = "v$version"
+update_changelog_on_bump = true
