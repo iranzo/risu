@@ -112,7 +112,9 @@ from itertools import groupby
 from multiprocessing import Pool, cpu_count
 from threading import Timer
 
-sys.path.append(os.path.abspath(os.path.dirname(__file__) + "/" + "../"))
+_parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if _parent_dir not in sys.path:
+    sys.path.append(_parent_dir)
 
 LOG = logging.getLogger("risu")
 
@@ -138,28 +140,17 @@ if HAVE_NEW_MODULES:
         _metadata_cache = None
 
 # Where are we?
-global risudir
-global localedir
-global ExtensionFolder
-global allplugins
-global HooksFolder
-
 risudir = os.path.abspath(os.path.dirname(__file__))
 localedir = os.path.join(risudir, "locale")
 ExtensionFolder = os.path.join(risudir, "extensions")
 HooksFolder = os.path.join(risudir, "hooks")
 allplugins = []
 
-global extensions
 extensions = []
-global exttriggers
 exttriggers = {}
-global hooks
 hooks = []
-global progress
 progress = "="
 
-global RISU_LIVE
 RISU_LIVE = 0
 
 # This will use system defined LANGUAGE
@@ -247,12 +238,15 @@ def loadPymodules(Extension):
     return dynamic_import(Extension["name"], Extension["info"])
 
 
-def initPymodules(extensions=getExtensions()):
+def initPymodules(extensions=None):
     # type: (List[Dict[str, Any]]) -> Tuple[List[Any], Dict[str, List[Any]]]
     """
     Initializes Extensions
     :return: list of Extension modules initialized
     """
+
+    if extensions is None:
+        extensions = getExtensions()
 
     exts = []
 
@@ -269,11 +263,14 @@ def initPymodules(extensions=getExtensions()):
     return exts, exttriggers
 
 
-def getPymodules(options=None, folders=[HooksFolder]):
+def getPymodules(options=None, folders=None):
     """
     Gets list of Hooks in the Hooks folder
     :return: list of Hooks available
     """
+
+    if folders is None:
+        folders = [HooksFolder]
 
     try:
         hfilter = options.hfilter
@@ -315,12 +312,13 @@ def which(binary):
     :return: path or None if not found
     """
 
+    try:
+        return shutil.which(binary)
+    except AttributeError:
+        # Python 2.7 fallback
+        pass
+
     def is_executable(filename):
-        """
-        Returns True if filename is executable, False otherwise
-        :param filename: File to check
-        :return: True or False if executable or not
-        """
         return os.path.isfile(filename) and os.access(filename, os.X_OK)
 
     path = os.path.split(binary)[0]
@@ -993,9 +991,8 @@ def dorisu(
 
     # Check kb mapping file
     try:
-        overrides = json.load(
-            open(os.path.join(risudir, "plugins/overrides.json"), "r")
-        )
+        with open(os.path.join(risudir, "plugins/overrides.json"), "r") as f:
+            overrides = json.load(f)
     except (IOError, OSError, ValueError):
         overrides = {}
 
@@ -1452,7 +1449,8 @@ def read_config(options=False):
     for filename in possiblepaths:
         if os.path.exists(filename):
             try:
-                config = json.load(open(filename, "r"))
+                with open(filename, "r") as f:
+                    config = json.load(f)
             except (IOError, OSError, ValueError):
                 config = {}
 

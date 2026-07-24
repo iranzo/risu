@@ -31,13 +31,16 @@ import logging
 import os.path
 import shutil
 import sys
+import tempfile
 import time
 
-sys.path.append(os.path.abspath(os.path.dirname(__file__) + "/" + "../"))
+_parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if _parent_dir not in sys.path:
+    sys.path.append(_parent_dir)
 
-from maguiclient import autogroup as autogroup_module
-from maguiclient import client as magui_client
-from risuclient import shell as risu
+from maguiclient import autogroup as autogroup_module  # noqa: E402
+from maguiclient import client as magui_client  # noqa: E402
+from risuclient import shell as risu  # noqa: E402
 
 LOG = logging.getLogger("magui")
 
@@ -45,17 +48,11 @@ LOG = logging.getLogger("magui")
 maguidir = os.path.abspath(os.path.dirname(__file__))
 localedir = os.path.join(risu.risudir, "locale")
 
-global PluginsFolder
 PluginsFolder = os.path.join(maguidir, "plugins")
-
-global MaguiHooksFolder
 MaguiHooksFolder = os.path.join(maguidir, "hooks")
 
-global plugins
 plugins = []
-global plugtriggers
 plugtriggers = {}
-global maguihooks
 maguihooks = []
 
 trad = gettext.translation("risu", localedir, fallback=True)
@@ -262,11 +259,14 @@ def findtarget(data):
     return autogroup_module.findtarget(data)
 
 
-def domagui(sosreports, risuplugins, options=False, grouped={}, runhooks=True):
+def domagui(sosreports, risuplugins, options=False, grouped=None, runhooks=True):
     """
     Do actual execution against sosreports
     :return: dict of result
     """
+
+    if grouped is None:
+        grouped = {}
 
     if grouped != {}:
         # Cleanup grouped for sosreports we're not interested at all
@@ -391,7 +391,7 @@ def domagui(sosreports, risuplugins, options=False, grouped={}, runhooks=True):
     return grouped
 
 
-def filterresults(data, triggers=[]):
+def filterresults(data, triggers=None):
     """
     Filters results for only the data that plugin will use
     :param data: full set of data
@@ -401,6 +401,8 @@ def filterresults(data, triggers=[]):
     NOTE: This function now delegates to MaguiClient for better maintainability.
     Kept here for backward compatibility.
     """
+    if triggers is None:
+        triggers = []
     client = magui_client.MaguiClient()
     return client.filter_results(data, triggers)
 
@@ -495,7 +497,9 @@ def main():
 
             # Now check the hosts we got logs from:
             hosts = risu.findplugins(
-                folders=glob.glob("/tmp/risu/hostrun/*"),  # nosec B108
+                folders=glob.glob(
+                    os.path.join(tempfile.gettempdir(), "risu", "hostrun", "*")
+                ),
                 executables=False,
                 fileextension=".json",
             )
@@ -536,7 +540,7 @@ def main():
         onlysave=False,
         result=None,
         anon=False,
-        grouped={},
+        grouped=None,
     ):
         """
         Runs magui and magui plugins
@@ -551,6 +555,9 @@ def main():
         :param result: Results to write to disk
         :return: results of execution
         """
+
+        if grouped is None:
+            grouped = {}
 
         start_time = time.time()
         if not onlysave and not result:
@@ -653,17 +660,10 @@ def main():
     filenames = []
 
     # loop over filenames first so that full results are saved and freed from memory
+    basefilename = os.path.splitext(options.output)
     for group in groups:
-        basefilename = os.path.splitext(options.output)
         filename = basefilename[0] + "-" + group + basefilename[1]
-        runautogroup = True
-        for progroup in processedgroups:
-            if sorted(set(groups[group])) == sorted(set(processedgroups[progroup])):
-                runautogroup = False
-                runautofile = progroup
-        if runautogroup:
-            # Analysis will be generated
-            filenames.append(filename)
+        filenames.append(filename)
 
     print("\nRunning full comparison:... %s" % options.output)
 
@@ -698,6 +698,7 @@ def main():
             filename = basefilename[0] + "-" + group + basefilename[1]
             print(_("\nRunning for group: %s" % filename))
             runautogroup = True
+            runautofile = None
 
             for progroup in processedgroups:
                 if groups[target] == processedgroups[progroup]:
